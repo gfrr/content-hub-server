@@ -8,33 +8,34 @@ const bcryptSalt        = 10;
 
 
 router.post("/login", function(req, res) {
-
+  console.log(req.body.username, req.body.password);
   if(req.body.username && req.body.password){
     const username = req.body.username;
     const password = req.body.password;
-  }
 
-  if (username === "" || password === "") {
-    res.status(401).json({message:"fill up the fields"});
-    return;
-  }
 
-  User.findOne({ "username": username }, (err, user)=> {
-
-  	if(!user) res.status(401).json({message:"no such user found"});
-	   else {
-      bcrypt.compare(password, user.password, (err, isMatch) => {
-        if (!isMatch) res.status(401).json({message:"passwords did not match"});
-        else {
-        	console.log('user', user);
-          const payload = {id: user._id, user: user.username};
-          const token = jwt.sign(payload, jwtOptions.secretOrKey);
-          console.log("token", token);
-          res.json({message: "ok", token: token, user: user});
-        }
-      });
+    if (username === "" || password === "") {
+      res.status(401).json({message:"fill up the fields"});
+      return;
     }
-  });
+
+    User.findOne({ "username": username }, (err, user)=> {
+      console.log("called");
+    	if(!user) res.status(401).json({message:"no such user found"});
+  	   else {
+        bcrypt.compare(password, user.password, (err, isMatch) => {
+          if (!isMatch) res.status(401).json({message:"passwords did not match"});
+          else {
+          	console.log('user', user);
+            const payload = {id: user._id, user: user.username};
+            const token = jwt.sign(payload, jwtOptions.secretOrKey);
+            console.log("token", token);
+            res.json({message: "ok", token: token, user: user});
+          }
+        });
+      }
+    });
+}
 });
 
 router.post("/signup", (req, res, next) => {
