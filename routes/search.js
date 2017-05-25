@@ -77,31 +77,6 @@ router.post("/search/tumblr", (req, res, next)=>{
 			else res.status(200).json(body);
  });
 
-	// const oauth2 = new OAuth2(process.env.TUMBLR_KEY, process.env.TUMBLR_SECRET, 'https://api.tumblr.com/', null, 'oauth2/token', null);
-	// oauth2.getOAuthAccessToken('', {
-	//     'grant_type': 'client_credentials'
-	//   }, (e, access_token) =>{
-	//       console.log(access_token); //string that we can use to authenticate request
-	//
-	// 			var options = {
-	// 			 hostname: 'api.twitter.com',
-	// 			 path: '/1.1/search/tweets.json?q=%23' + req.body.hashtag + "&result_type=mixed",
-	// 			 headers: {
-	// 					 Authorization: 'Bearer ' + access_token
-	// 			 }
-	// 		 	};
-	// 			https.get(options, (result)=>{
-	// 					var buffer = '';
-	// 				  result.setEncoding('utf8');
-	// 				  result.on('data', (data)=>{
-	// 				    buffer += data;
-	// 				  });
-	// 				  result.on('end', ()=>{
-	// 				    var tweets = JSON.parse(buffer);
-	// 						res.status(200).json(tweets);
-	// 				  });
-	// 				});
-	// 			});
 });
 
 module.exports = router;

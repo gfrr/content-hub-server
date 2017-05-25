@@ -11,6 +11,7 @@ const dotenv          = require('dotenv');
 const mongoose        = require("mongoose");
 const auth            = require("./routes/auth");
 const search          = require("./routes/search");
+
 const app = express();
 const corsOptions = {credentials: true, origin: 'http://localhost:4200'};
 
@@ -26,6 +27,7 @@ app.set('view engine', 'ejs');
 //change before deploy
 app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
+app.use(passport.initialize());
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
