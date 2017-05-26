@@ -37,11 +37,13 @@ router.post('/users/:id/save', passport.authenticate('jwt', {
         users[0].save();
         console.log(users[0]);
         res.status(200).json({
-          message: typeof(users[0].favorites[0])
+          user: users[0]
         });
       });
     });
+  /*
 
+  */
   });
 
 

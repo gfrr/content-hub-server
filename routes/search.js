@@ -7,9 +7,18 @@ const dotenv            = require("dotenv");
 const request           = require("request");
 const OAuth2 						= require('oauth').OAuth2;
 const https 						= require('https');
+const Content						= require("../models/content");
 dotenv.config();
 dotenv.load();
 
+
+router.get("/search/:id", (req, res, next)=>{
+	console.log(req.params.id);
+	Content.findById(req.params.id, (err, content)=>{
+		if(err) res.status(400).json({message: "error"});
+		res.status(200).json({content});
+	});
+});
 
 router.post("/search/twitter", (req, res, next)=>{
 	const oauth2 = new OAuth2(process.env.CONSUMER_KEY, process.env.CONSUMER_SECRET, 'https://api.twitter.com/', null, 'oauth2/token', null);
