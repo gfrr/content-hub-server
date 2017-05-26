@@ -11,6 +11,7 @@ const dotenv          = require('dotenv');
 const mongoose        = require("mongoose");
 const auth            = require("./routes/auth");
 const search          = require("./routes/search");
+const users           = require("./routes/users");
 
 const app = express();
 const corsOptions = {credentials: true, origin: 'http://localhost:4200'};
@@ -35,7 +36,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
+app.use("/", users);
 app.use("/", search);
 app.use("/", auth);
 app.use('/', index);

@@ -73,19 +73,7 @@ router.post("/signup", (req, res, next) => {
   });
 });
 
-router.get("/secret", passport.authenticate('jwt', { session: false }), (req, res)=>{
-  res.json({message: "Success! You can not see this without a token"});
-});
 
-/* DELETE a USER. */
-router.delete('/users/:id',  passport.authenticate('jwt', { session: false }), (req, res)=>{
-
-  console.log("DELETE CALLED ");
-  User.findOneAndRemove({'_id' : req.params.id}, (err)=>{
-      if(err) res.status(400).json({message: 'Not found'});
-      res.status(200).json({message: 'ELIMINATED'});
-      });
-});
 
 
 module.exports = router;
