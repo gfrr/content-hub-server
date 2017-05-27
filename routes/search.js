@@ -53,7 +53,6 @@ router.post("/search/twitter", (req, res, next)=>{
 
 
 router.post("/search/youtube", (req, res, next)=> {
-  console.log(req.body.search);
   //sending the search query to the google api and returning the results
   const url = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=15&type=video&order=viewCount&q="+req.body.search+"&key="+process.env.YOUTUBE_KEY;
   request(url, (err, resp, body)=> {
@@ -69,7 +68,6 @@ router.post("/search/reddit", (req, res, next)=> {
 	const url = "https://www.reddit.com/search.json?q=%23"+ req.body.hashtag + "&sort=top&t=week";
 	request(url, (err, resp, body)=> {
      body = JSON.parse(body);
-     console.log(body);
      if (err) res.status(401).json({message: "error"});
       else res.status(200).json(body);
  	});
@@ -77,7 +75,6 @@ router.post("/search/reddit", (req, res, next)=> {
 });
 
 router.post("/search/tumblr", (req, res, next)=>{
-	console.log(req.body.search);
 	//sending the search query to the google api and returning the results
 	const url = "https://api.tumblr.com/v2/tagged?tag="+ req.body.hashtag +"&api_key="+ process.env.TUMBLR_KEY;
 	request(url, (err, resp, body)=> {
