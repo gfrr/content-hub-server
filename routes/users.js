@@ -46,6 +46,10 @@ router.post('/users/:id/save', passport.authenticate('jwt', {
   */
   });
 
+// router.patch("/users/:id", passport.authenticate('jwt', {session: false}), (req, res)=>{
+//
+// });
+
 
 /* DELETE a USER. */
 router.delete('/users/:id',
