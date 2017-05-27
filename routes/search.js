@@ -12,13 +12,37 @@ dotenv.config();
 dotenv.load();
 
 
-router.get("/search/:id", (req, res, next)=>{
-	console.log(req.params.id);
-	Content.findById(req.params.id, (err, content)=>{
-		if(err) res.status(400).json({message: "error"});
-		res.status(200).json({content});
-	});
+
+
+router.get("/search/trends", (req, res, next)=>{
+	//returns the most popular tags worldwide, if i have time i implement the local search
+	const oauth2 = new OAuth2(process.env.CONSUMER_KEY, process.env.CONSUMER_SECRET, 'https://api.twitter.com/', null, 'oauth2/token', null);
+	oauth2.getOAuthAccessToken('', {
+	    'grant_type': 'client_credentials'
+	  }, (e, access_token) =>{
+	      console.log(access_token); //string that we can use to authenticate request
+
+				var options = {
+				 hostname: 'api.twitter.com',
+				 path: '/1.1/trends/place.json?id=1&exclude=tweets',
+				 headers: {
+						 Authorization: 'Bearer ' + access_token
+				 }
+			 	};
+				https.get(options, (result)=>{
+						var buffer = '';
+					  result.setEncoding('utf8');
+					  result.on('data', (data)=>{
+					    buffer += data;
+					  });
+					  result.on('end', ()=>{
+					    var tags = JSON.parse(buffer);
+							res.status(200).json(tags[0].trends);
+					  });
+					});
+				});
 });
+
 
 router.post("/search/twitter", (req, res, next)=>{
 	const oauth2 = new OAuth2(process.env.CONSUMER_KEY, process.env.CONSUMER_SECRET, 'https://api.twitter.com/', null, 'oauth2/token', null);
@@ -85,4 +109,11 @@ router.post("/search/tumblr", (req, res, next)=>{
 
 });
 
+router.get("/search/:id", (req, res, next)=>{
+	console.log(req.params.id);
+	Content.findById(req.params.id, (err, content)=>{
+		if(err) res.status(400).json({message: "error"});
+		res.status(200).json({content});
+	});
+});
 module.exports = router;
