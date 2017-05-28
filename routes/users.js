@@ -17,6 +17,25 @@ router.get("/secret", passport.authenticate('jwt', {
   });
 });
 
+/* DELETE a USER. */
+router.delete('/users/:id',
+  passport.authenticate('jwt', {
+    session: false
+  }), (req, res) => {
+
+    console.log("DELETE CALLED ");
+    User.findOneAndRemove({
+      '_id': req.params.id
+    }, (err) => {
+      if (err) res.status(400).json({
+        message: 'Not found'
+      });
+      res.status(200).json({
+        message: 'ELIMINATED'
+      });
+    });
+  });
+
 router.post('/users/:id/save', passport.authenticate('jwt', {
     session: false
   }),
@@ -44,42 +63,31 @@ router.post('/users/:id/save', passport.authenticate('jwt', {
 
   });
 
-router.patch("/users/:id", passport.authenticate('jwt', {session: false}), (req, res)=>{
+router.patch("/users/:id/search", passport.authenticate('jwt', {session: false}), (req, res)=>{
+    console.log(req.body);
     User.findById(req.params.id, (err, user)=>{
       if(err) res.status(500).json({message: err});
-      if(user.searches.indexOf(req.body.search) != -1) console.log("search already exists");
-      else{
-        user.searches.push(req.body.search);
-        user.save();
+      if(req.body.action == "add"){
+        if(user.searches.indexOf(req.body.search) != -1) console.log("search already exists");
+        else{
+          user.searches.push(req.body.search);
+          user.save();
+        }
+        res.status(200).json({user: user});
       }
-      res.status(200).json({user: user});
+      if(req.body.action == "delete"){
+        if(user.searches.indexOf(req.body.search) != -1){
+           user.searches.splice(user.searches.indexOf(req.body.search), 1);
+           user.save();
+           console.log("search updated");
+        }
+        res.status(200).json({user: user});
+      }
+
     });
-    // User.findByIdAndUpdate(req.params.id, {$push:{searches: req.body.search}}, {new: true}, (err, user)=>{
-    //   if(err) res.status(500).json({message: err});
-    //   res.status(200).json({user: user});
-    // });
 });
 
 
-
-/* DELETE a USER. */
-router.delete('/users/:id',
-  passport.authenticate('jwt', {
-    session: false
-  }), (req, res) => {
-
-    console.log("DELETE CALLED ");
-    User.findOneAndRemove({
-      '_id': req.params.id
-    }, (err) => {
-      if (err) res.status(400).json({
-        message: 'Not found'
-      });
-      res.status(200).json({
-        message: 'ELIMINATED'
-      });
-    });
-  });
 
 
 module.exports = router;
