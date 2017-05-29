@@ -50,6 +50,8 @@ router.get("/search/popular", (req, res)=>{
 
 
 router.post("/search/twitter", (req, res)=>{
+	var url = '/1.1/search/tweets.json?q=%23' + req.body.hashtag + "&result_type=mixed";
+	if(req.body.type === "trending") url = '/1.1/search/tweets.json?q=%23' + req.body.hashtag + "&result_type=recent";
 	const oauth2 = new OAuth2(process.env.CONSUMER_KEY, process.env.CONSUMER_SECRET, 'https://api.twitter.com/', null, 'oauth2/token', null);
 	oauth2.getOAuthAccessToken('', {
 	    'grant_type': 'client_credentials'
@@ -58,7 +60,7 @@ router.post("/search/twitter", (req, res)=>{
 
 				var options = {
 				 hostname: 'api.twitter.com',
-				 path: '/1.1/search/tweets.json?q=%23' + req.body.hashtag + "&result_type=mixed",
+				 path: url,
 				 headers: {
 						 Authorization: 'Bearer ' + access_token
 				 }
@@ -82,8 +84,10 @@ router.post("/search/twitter", (req, res)=>{
 
 
 router.post("/search/youtube", (req, res)=> {
+	console.log(req.body.type);
+  var url = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=15&type=video&order=viewCount&q="+req.body.search+"&key="+process.env.YOUTUBE_KEY;
+	if(req.body.type == "trending") url = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=15&type=video&chart=mostPopular&q="+req.body.search+"&key="+process.env.YOUTUBE_KEY;
   //sending the search query to the google api and returning the results
-  const url = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=15&type=video&order=viewCount&q="+req.body.search+"&key="+process.env.YOUTUBE_KEY;
   request(url, (err, resp, body)=> {
      body = JSON.parse(body);
      if (err) res.status(401).json({message: "error"});
@@ -94,7 +98,8 @@ router.post("/search/youtube", (req, res)=> {
 
 
 router.post("/search/reddit", (req, res)=> {
-	const url = "https://www.reddit.com/search.json?q=%23"+ req.body.hashtag + "&sort=top&t=week";
+	var url = "https://www.reddit.com/search.json?q=%23"+ req.body.hashtag + "&sort=top&t=all";
+	if(req.body.type == "trending") url = "https://www.reddit.com/search.json?q=%23"+ req.body.hashtag + "&sort=top&t=month";
 	request(url, (err, resp, body)=> {
      body = JSON.parse(body);
      if (err) res.status(401).json({message: "error"});
