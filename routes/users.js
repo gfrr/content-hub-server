@@ -60,8 +60,23 @@ router.post('/users/:id/save', passport.authenticate('jwt', {
         });
       });
     });
-
   });
+
+router.patch('/users/:id/save', passport.authenticate('jwt', {session: false}), (req, res)=>{
+   console.log(req.body);
+   if(typeof(req.body.contentId) === "undefined") res.status(400).json({message: "undefined"});
+   User.findById(req.params.id, (err, user)=>{
+     if(err) res.status(400).json({message: err});
+     if(user.favorites.indexOf(req.body.contentId) != -1){
+       user.favorites.splice(user.favorites.indexOf(req.body.contentId), 1);
+       user.save();
+       console.log("user content updated", user);
+       res.status(200).json({user: user});
+     }
+   });
+
+
+});
 
 router.patch("/users/:id/search", passport.authenticate('jwt', {session: false}), (req, res)=>{
     console.log(req.body);
