@@ -7,6 +7,7 @@ const contentSchema = new Schema({
     enum: ["YOUTUBE", "TWITTER", "TUMBLR", "REDDIT"],
     default: "YOUTUBE"
   },
+  searchTag: String,
   data: {
     type: Object,
     default: {}
@@ -16,7 +17,7 @@ const contentSchema = new Schema({
       createdAt: "created_at",
       updatedAt: "updated_at"
     }
-  
+
 
 });
 

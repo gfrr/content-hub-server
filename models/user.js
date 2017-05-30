@@ -6,6 +6,10 @@ const userSchema = new Schema({
   password: String,
   favorites: [{ type: Schema.Types.ObjectId, ref: 'Content' }],
   searches: [String],
+  private: {
+    type: Boolean,
+    default: false,
+  }
 }, {
   timestamps: {
     createdAt: "created_at",
