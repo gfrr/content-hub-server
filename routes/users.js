@@ -40,12 +40,14 @@ router.post('/users/:id/save', passport.authenticate('jwt', {
     session: false
   }),
   (req, res) => {
+    console.log(req.body);
     console.log("SAVE CONTENT CALLED");
     const newContent = Content(req.body);
     newContent.save((err, content) => {
       if (err) res.status(400).json({
         message: err
       });
+      console.log(content);
       User.find({
         _id: req.params.id
       }, (err, users) => {
