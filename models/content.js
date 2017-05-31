@@ -8,6 +8,7 @@ const contentSchema = new Schema({
     default: "YOUTUBE"
   },
   searchTag: String,
+  uniqueRef: String,
   data: {
     type: Object,
     default: {}

@@ -90,6 +90,7 @@ router.post("/search/youtube", (req, res)=> {
   //sending the search query to the google api and returning the results
   request(url, (err, resp, body)=> {
      body = JSON.parse(body);
+
      if (err) res.status(401).json({message: "error"});
       else res.status(200).json(body);
  });
@@ -123,7 +124,9 @@ router.get("/search/:id", (req, res)=>{
 	console.log(req.params.id);
 	Content.findById(req.params.id, (err, content)=>{
 		if(err) res.status(400).json({message: "error"});
+		console.log(content.searchTag);
 		res.status(200).json({content});
+
 	});
 });
 module.exports = router;
