@@ -40,27 +40,51 @@ router.post('/users/:id/save', passport.authenticate('jwt', {
     session: false
   }),
   (req, res) => {
-    console.log(req.body);
-    console.log("SAVE CONTENT CALLED");
-    const newContent = Content(req.body);
-    newContent.save((err, content) => {
-      if (err) res.status(400).json({
-        message: err
-      });
-      console.log(content);
-      User.find({
-        _id: req.params.id
-      }, (err, users) => {
-        if (err) res.status(400).json({
-          message: err
+
+    console.log(req.body.uniqueRef);
+    Content.findOne({"uniqueRef": req.body.uniqueRef}, (err, content)=>{
+      if(err) res.status(400).json({message:err});
+      if(!content){
+        const newContent = Content(req.body);
+        newContent.save((err, content) => {
+          if (err) res.status(400).json({
+            message: err
+          });
+          User.findById(req.params.id, (err, user) => {
+            if (err) res.status(400).json({
+              message: err
+            });
+            user.favorites.push(newContent._id);
+            user.save();
+            res.status(200).json({
+              user: user
+            });
+          });
         });
-        users[0].favorites.push(newContent._id);
-        users[0].save();
-        res.status(200).json({
-          user: users[0]
+
+      }
+      else{
+        User.findById(req.params.id, (err, user) => {
+          if (err) res.status(400).json({
+            message: err
+          });
+          if(user.favorites.filter((elem)=> elem == String(content._id)).length < 1){
+            console.log("new element!");
+            user.favorites.push(content._id);
+            user.save();
+            res.status(200).json({
+              user: user
+            });
+          }
+          else{
+            console.log("already saved");
+            res.status(200).json({user: user});
+          }
         });
-      });
+      }
     });
+
+
   });
 
 router.patch('/users/:id/save', passport.authenticate('jwt', {
