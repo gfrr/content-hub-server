@@ -12,7 +12,7 @@ const mongoose = require("mongoose");
 const auth = require("./routes/auth");
 const search = require("./routes/search");
 const users = require("./routes/users");
-
+const compression = require('compression');
 const app = express();
 const corsOptions = {
   credentials: true,
@@ -32,7 +32,7 @@ app.set('view engine', 'ejs');
 app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
 app.use(passport.initialize());
-
+app.use(compression());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
