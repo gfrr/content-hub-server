@@ -3,7 +3,13 @@ const Schema   = mongoose.Schema;
 
 const userSchema = new Schema({
   username: String,
-  password: String
+  password: String,
+  favorites: [{ type: Schema.Types.ObjectId, ref: 'Content' }],
+  searches: [String],
+  private: {
+    type: Boolean,
+    default: false,
+  }
 }, {
   timestamps: {
     createdAt: "created_at",
